@@ -1,72 +1,43 @@
-#include <iostream>
-#include <fstream>
-#include <string>
+#include <algorithm> // sort
+#include <cstdlib> // EXIT_FAILURE, EXIT_SUCCESS
+#include <fstream> // ifstream
+#include <iostream> // cin, cout
+#include <string> // string
+#include <unordered_map> // unordered_map
+#include <utility> // pair
+#include <vector> // vector
+
 using namespace std;
 
-const int MAX = 100000;
-string words[MAX];
-int instances[MAX];
-int cast = 0 ;
-
-void insert (string input)
+int main()
 {
-    //    check first, add if not present
-    for (int i = 0 ; i < cast; i++ )
-    {
-        if (input == words[i] )
-        {
-            instances[i]++;
-            return ;
-        }
-    }
-    if (cast < MAX)
-    {
-        words [cast] = input ;
-        instances[cast] = 1;
-        cast ++;
-    }
-    else
-    {
-        return ;
-    }
- return ;
-}
-int FindTop (string & word)
-{
-    int TopCast = instances[0];
-    int TopIndex = 0;
-    for (int i = 1; i<cast; i++ )
-    {
-        if(instances[i] > TopCast )
-        {
-            TopCast = instances[i];
-            TopIndex = i;
-        }
-    }
-    instances[TopIndex] = 0;
-    word = words[TopIndex ];
-    return TopCast;
-}
-int main ()
-{
-    string word;
-    string file;
-    cin>>file;
-    ifstream data (file);
-    while(data >> word)
-    {
-        insert(word);
-    }
     
-    for (int i = 0; i < 5 ; i++)
-    {
-        cout<<FindTop(word)<<" "<<word<<endl;
+    string filename;
+    cin >> filename;
+
+    ifstream file{filename};
+    // Check that the file was opened successfully.
+    if (!file) {
+        return EXIT_FAILURE;
     }
+
+    unordered_map<string, int> words;
+    for (string word; file >> word;)
+       
+        ++words[word];
+
+    vector<std::pair<string, int>> sorted_words{words.begin(), words.end()};
+  
+    sort(sorted_words.begin(), sorted_words.end(), [](const auto& a, const auto& b) {
+        return a.second > b.second;
+    });
+   
+    sort(sorted_words.begin(), sorted_words.begin() + 5, [](const auto& a, const auto& b) {
+        return a.first < b.first;
+    });
+
+    for (auto i = 0; i < 5 && i < sorted_words.size(); ++i)
+        cout << sorted_words[i].first << '\n';
+
+    return EXIT_SUCCESS;
 }
-/*
- american+
- bilbo
- cezar+
- dwarf
- yandex+
- */
